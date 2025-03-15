@@ -1,4 +1,4 @@
-# Japanese Video Subtitle Generator and Translator
+# Video Subtitle Generator and Translator
 
 A comprehensive Python tool for automatically generating, adding, and translating subtitles for Japanese-language videos, making them accessible to non-Japanese speakers.
 
