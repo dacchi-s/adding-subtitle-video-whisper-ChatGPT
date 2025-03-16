@@ -215,17 +215,23 @@ class SubtitleAdder(SubtitleProcessor):
         background = ColorClip(size=(original_width, new_height), color=(0,0,0), duration=video.duration)
         video_clip = video.set_position((0, 0))
         
-        subtitle_clips = [
-            self.create_subtitle_clip(sub.content, original_width)
-                .set_start(sub.start.total_seconds())
-                .set_end(sub.end.total_seconds())
-                .set_position((0, original_height))
-            for sub in subs
-        ]
+        # Create progress bar for subtitle generation
+        logger.info("Generating subtitle clips...")
+        subtitle_clips = []
         
+        for sub in tqdm(subs, desc="Creating subtitle clips"):
+            clip = self.create_subtitle_clip(sub.content, original_width) \
+                .set_start(sub.start.total_seconds()) \
+                .set_end(sub.end.total_seconds()) \
+                .set_position((0, original_height))
+            subtitle_clips.append(clip)
+        
+        logger.info("Compositing video with subtitles...")
         final_video = CompositeVideoClip([background, video_clip] + subtitle_clips, size=(original_width, new_height))
         final_video = final_video.set_duration(video.duration)
         
+        # Remove the callback parameter
+        logger.info("Rendering final video with subtitles (this may take a while)...")
         final_video.write_videofile(
             self.output_video, 
             codec=Config.VIDEO_CODEC, 
@@ -235,7 +241,9 @@ class SubtitleAdder(SubtitleProcessor):
             verbose=False,
             logger=None
         )
-
+        
+        logger.info("Video rendering complete!")
+    
     @staticmethod
     def create_subtitle_clip(txt: str, video_width: int, font_size: int = Config.DEFAULT_FONT_SIZE, max_lines: int = Config.MAX_SUBTITLE_LINES) -> ImageClip:
         if any(ord(char) > 127 for char in txt):
