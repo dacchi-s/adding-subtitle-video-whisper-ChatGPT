@@ -1,0 +1,22 @@
+name: subtitle-generator
+channels:
+  - conda-forge
+  - pytorch
+  - nvidia
+  - defaults
+dependencies:
+  - python=3.9
+  - pip
+  - cudatoolkit=11.8
+  - tiktoken
+  - pillow
+  - tqdm
+  - srt
+  - moviepy
+  - python-dotenv
+  - pip:
+    - openai-whisper
+    - openai
+    - torch
+    - torchvision
+    - torchaudio
