@@ -230,7 +230,6 @@ class SubtitleAdder(SubtitleProcessor):
         final_video = CompositeVideoClip([background, video_clip] + subtitle_clips, size=(original_width, new_height))
         final_video = final_video.set_duration(video.duration)
         
-        # Remove the callback parameter
         logger.info("Rendering final video with subtitles (this may take a while)...")
         final_video.write_videofile(
             self.output_video, 
@@ -238,8 +237,8 @@ class SubtitleAdder(SubtitleProcessor):
             audio_codec=Config.AUDIO_CODEC,
             preset=Config.VIDEO_PRESET,
             ffmpeg_params=['-crf', Config.CRF, '-pix_fmt', Config.PIXEL_FORMAT],
-            verbose=False,
-            logger=None
+            verbose=True,
+            logger="bar"
         )
         
         logger.info("Video rendering complete!")
